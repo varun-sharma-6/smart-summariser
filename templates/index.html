@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text Summariser</title>
+    <link rel="icon" type="image/png" href="icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
+
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+textarea{
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+    
+}
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+</style>
+</head>
+
+<script>
+	function COPY() {
+	  var copyText = document.getElementById("subject1");
+	  copyText.select();
+	  //copyText.setSelectionRange(0, 99999); /* For mobile devices */
+	  document.execCommand("copy");
+	}
+	function PDF() {
+            var divContents = $("#subject1").html();
+            var printWindow = window.open();
+            printWindow.document.write('<html><head><title>Summary</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+			window.saveAs("pdf", "summary");
+			
+			//printWindow.close();
+			/*
+			var doc = new jsPDF();
+			
+			//$('#convertToPdf').click(function () {
+				doc.fromHTML($('#subject1').text(), 20, 20, {
+						'width': 100
+				});
+				doc.save('summary.pdf');
+			//});
+			*/
+	}
+	function DOCX() {
+			var divContents = $("#subject1").html();
+            var printWindow = window.open();
+            printWindow.document.write('<html><head><title>DIV Contents</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+			printWindow.save();
+	}
+	
+			
+			
+</script>
+<body>
+
+<center><h2>Text Summariser</h2><center/>
+
+<div class="container">
+  <form method="POST">
+        {% csrf_token %}
+    <label for="subject">Enter wikipedia link or text</label>
+    <textarea id="subject" name="search" placeholder="Write something.." style="height:100px"></textarea>
+    <input type="submit" value="Submit" align="center">
+  </form>
+  <textarea id="subject1" name="subject"  style="height:200px">{{questions}}</textarea>
+</div>
+<div>
+	<center>
+	<button onclick="COPY()">Copy text</button>
+	<span>Download as</span>
+	<button id="convertToPdf" onclick="PDF()">PDF</button>
+	<button onclick="DOC()">DOCX</button>
+	</center>
+</div >
+  <p align="bottom">Made by <strong>Varun Sharma</strong>  </p>
+</body>
+</html>
